@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "465715860922",
+    "project_id": "reel-app-db138",
+    "storage_bucket": "reel-app-db138.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:465715860922:android:f2bde989aed4f4b585f983",
+        "android_client_info": {
+          "package_name": "com.example.reel_app2"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCj15wgORZY16cnzs_rrCJwSKLdM9xlUJc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
