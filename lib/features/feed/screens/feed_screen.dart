@@ -50,7 +50,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
         : const ProfileScreen();
 
     return Scaffold(
-      extendBody: true,
+      //extendBody: true,
       body: body,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,

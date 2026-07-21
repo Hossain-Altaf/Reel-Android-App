@@ -5,7 +5,8 @@ import '../models/reel.dart';
 import 'auth_service.dart';
 
 class ReelService {
-  static const String baseUrl = 'http://10.0.2.2:5000/api';
+  //static const String baseUrl = 'http://10.0.2.2:5000/api';
+  static const String baseUrl = 'http://localhost:5000/api';
   final AuthService _authService = AuthService();
 
   Future<List<Reel>> fetchFeed({int page = 1, int limit = 10}) async {

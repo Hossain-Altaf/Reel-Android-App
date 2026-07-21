@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/app_user.dart';
 import '../services/auth_service.dart';
+import 'dart:io';
 
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 
@@ -49,6 +50,11 @@ class AuthController extends StateNotifier<AsyncValue<AppUser?>> {
   Future<void> signOut() async {
     await _authService.signOut();
     state = const AsyncValue.data(null);
+  }
+
+  Future<void> updateProfile({String? username, String? bio, File? avatarFile}) async {
+    final updated = await _authService.updateProfile(username: username, bio: bio, avatarFile: avatarFile);
+    state = AsyncValue.data(updated);
   }
 }
 

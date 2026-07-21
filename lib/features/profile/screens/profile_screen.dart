@@ -4,6 +4,8 @@ import 'package:cached_network_image/cached_network_image.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/feed_provider.dart';
 import '../../../models/reel.dart';
+import '../../feed/screens/reel_viewer_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -17,6 +19,13 @@ class ProfileScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('My Reels'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.edit),
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const EditProfileScreen()),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () => ref.read(authControllerProvider.notifier).signOut(),
@@ -52,11 +61,19 @@ class ProfileScreen extends ConsumerWidget {
             itemCount: reels.length,
             itemBuilder: (context, index) {
               final reel = reels[index];
-              return reel.thumbnailUrl.isNotEmpty
-                  ? CachedNetworkImage(imageUrl: reel.thumbnailUrl, fit: BoxFit.cover)
-                  : Container(
-                color: Colors.grey.shade900,
-                child: const Icon(Icons.play_circle_outline, color: Colors.white54),
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => ReelViewerScreen(reels: reels, initialIndex: index),
+                  ),
+                ),
+                child: reel.thumbnailUrl.isNotEmpty
+                    ? CachedNetworkImage(imageUrl: reel.thumbnailUrl, fit: BoxFit.cover)
+                    : Container(
+                  color: Colors.grey.shade900,
+                  child: const Icon(Icons.play_circle_outline, color: Colors.white54),
+                ),
               );
             },
           );
