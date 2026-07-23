@@ -47,12 +47,27 @@ class _UploadScreenState extends ConsumerState<UploadScreen> {
       );
       final fileToUpload = compressed?.file ?? _videoFile!;
 
+      // Grab a frame from the video to use as the grid thumbnail.
+      File? thumbnailFile;
+      try {
+        final thumb = await VideoCompress.getFileThumbnail(
+          fileToUpload.path,
+          quality: 50,
+          position: -1, // -1 = grab a frame from partway through, not just frame 0
+        );
+        thumbnailFile = thumb;
+      } catch (_) {
+        // If thumbnail generation fails for any reason, just upload without one —
+        // not worth blocking the whole upload over a missing thumbnail.
+      }
+
       await ref.read(reelServiceProvider).uploadReel(
         videoFile: fileToUpload,
         caption: _captionController.text.trim(),
+        thumbnailFile: thumbnailFile,
       );
 
-      if (mounted) Navigator.pop(context, true); // true = "a new reel was posted"
+      if (mounted) Navigator.pop(context, true);
     } catch (e) {
       setState(() => _error = e.toString());
     } finally {

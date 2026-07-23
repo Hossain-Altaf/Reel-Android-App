@@ -7,3 +7,7 @@ final reelServiceProvider = Provider<ReelService>((ref) => ReelService());
 final reelsFeedProvider = FutureProvider<List<Reel>>((ref) {
   return ref.watch(reelServiceProvider).fetchFeed();
 });
+
+final followingFeedProvider = FutureProvider<List<Reel>>((ref) {
+  return ref.watch(reelServiceProvider).fetchFollowingFeed();
+});

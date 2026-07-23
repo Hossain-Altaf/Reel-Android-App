@@ -12,16 +12,25 @@ class FeedScreen extends ConsumerStatefulWidget {
   ConsumerState<FeedScreen> createState() => _FeedScreenState();
 }
 
-class _FeedScreenState extends ConsumerState<FeedScreen> {
+class _FeedScreenState extends ConsumerState<FeedScreen> with SingleTickerProviderStateMixin {
   int _navIndex = 0;
+  late TabController _tabController;
 
   @override
-  Widget build(BuildContext context) {
-    final reelsAsync = ref.watch(reelsFeedProvider);
+  void initState() {
+    super.initState();
+    _tabController = TabController(length: 2, vsync: this);
+  }
 
-    final body = _navIndex == 0
-        ? RefreshIndicator(
-      onRefresh: () async => ref.invalidate(reelsFeedProvider),
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  Widget _buildFeedList(AsyncValue<List<dynamic>> reelsAsync, dynamic providerToInvalidate) {
+    return RefreshIndicator(
+      onRefresh: () async => ref.invalidate(providerToInvalidate),
       child: reelsAsync.when(
         data: (reels) {
           if (reels.isEmpty) {
@@ -29,8 +38,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
               children: const [
                 SizedBox(height: 200),
                 Center(
-                  child: Text('No reels yet. Be the first to upload!',
-                      style: TextStyle(color: Colors.white70)),
+                  child: Text('No reels yet.', style: TextStyle(color: Colors.white70)),
                 ),
               ],
             );
@@ -46,11 +54,44 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
           child: Text('Error loading feed: $e', style: const TextStyle(color: Colors.white)),
         ),
       ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final forYouAsync = ref.watch(reelsFeedProvider);
+    final followingAsync = ref.watch(followingFeedProvider);
+
+    final body = _navIndex == 0
+        ? Column(
+      children: [
+        SafeArea(
+          bottom: false,
+          child: TabBar(
+            controller: _tabController,
+            indicatorColor: Colors.white,
+            labelColor: Colors.white,
+            unselectedLabelColor: Colors.white54,
+            tabs: const [
+              Tab(text: 'For You'),
+              Tab(text: 'Following'),
+            ],
+          ),
+        ),
+        Expanded(
+          child: TabBarView(
+            controller: _tabController,
+            children: [
+              _buildFeedList(forYouAsync, reelsFeedProvider),
+              _buildFeedList(followingAsync, followingFeedProvider),
+            ],
+          ),
+        ),
+      ],
     )
         : const ProfileScreen();
 
     return Scaffold(
-      //extendBody: true,
       body: body,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
@@ -63,6 +104,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             );
             if (uploaded == true) {
               ref.invalidate(reelsFeedProvider);
+              ref.invalidate(followingFeedProvider);
             }
             return;
           }

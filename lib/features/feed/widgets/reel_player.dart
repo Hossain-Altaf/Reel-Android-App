@@ -6,6 +6,7 @@ import '../../../models/reel.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../providers/feed_provider.dart';
 import '../../profile/screens/user_profile_screen.dart';
+import 'comments_sheet.dart';
 
 class ReelPlayer extends ConsumerStatefulWidget {
   final Reel reel;
@@ -185,6 +186,16 @@ class _ReelPlayerState extends ConsumerState<ReelPlayer> {
                   onPressed: _toggleLike,
                 ),
                 Text('$_likeCount', style: const TextStyle(color: Colors.white)),
+                const SizedBox(height: 20),
+                IconButton(
+                  icon: const Icon(Icons.comment_outlined, color: Colors.white, size: 30),
+                  onPressed: () => showModalBottomSheet(
+                    context: context,
+                    isScrollControlled: true,
+                    backgroundColor: Colors.transparent,
+                    builder: (_) => CommentsSheet(reelId: widget.reel.id),
+                  ),
+                ),
               ],
             ),
           ),
