@@ -7,6 +7,7 @@ class AppUser {
   final int followerCount;
   final int followingCount;
   final bool isFollowedByMe;
+  final bool followsMe;
 
   AppUser({
     required this.id,
@@ -17,6 +18,7 @@ class AppUser {
     this.followerCount = 0,
     this.followingCount = 0,
     this.isFollowedByMe = false,
+    this.followsMe = false,
   });
 
   factory AppUser.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class AppUser {
       followerCount: json['followerCount'] ?? 0,
       followingCount: json['followingCount'] ?? 0,
       isFollowedByMe: json['isFollowedByMe'] ?? false,
+      followsMe: json['followsMe'] ?? false,
     );
   }
 }

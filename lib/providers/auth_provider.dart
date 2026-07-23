@@ -1,16 +1,18 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/app_user.dart';
 import '../services/auth_service.dart';
+import 'chat_provider.dart';
 import 'dart:io';
 
 final authServiceProvider = Provider<AuthService>((ref) => AuthService());
 
 class AuthController extends StateNotifier<AsyncValue<AppUser?>> {
-  AuthController(this._authService) : super(const AsyncValue.loading()) {
+  AuthController(this._authService, this._ref) : super(const AsyncValue.loading()) {
     _checkExistingSession();
   }
 
   final AuthService _authService;
+  final Ref _ref;
 
   Future<void> _checkExistingSession() async {
     try {
@@ -47,19 +49,20 @@ class AuthController extends StateNotifier<AsyncValue<AppUser?>> {
     }
   }
 
-  Future<void> signOut() async {
-    await _authService.signOut();
-    state = const AsyncValue.data(null);
-  }
-
   Future<void> updateProfile({String? username, String? bio, File? avatarFile}) async {
     final updated = await _authService.updateProfile(username: username, bio: bio, avatarFile: avatarFile);
     state = AsyncValue.data(updated);
   }
+
+  Future<void> signOut() async {
+    _ref.read(chatServiceProvider).disconnect();
+    await _authService.signOut();
+    state = const AsyncValue.data(null);
+  }
 }
 
 final authControllerProvider = StateNotifierProvider<AuthController, AsyncValue<AppUser?>>((ref) {
-  return AuthController(ref.watch(authServiceProvider));
+  return AuthController(ref.watch(authServiceProvider), ref);
 });
 
 final currentUserProvider = Provider<AppUser?>((ref) {

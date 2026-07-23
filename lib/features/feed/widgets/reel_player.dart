@@ -86,10 +86,12 @@ class _ReelPlayerState extends ConsumerState<ReelPlayer> {
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!mounted) return; // widget already disposed, ignore this late callback
+
     final nowVisible = info.visibleFraction > 0.8;
     _isVisible = nowVisible;
 
-    if (!_initialized) return; // will be handled by the initialize().then() callback once ready
+    if (!_initialized) return;
 
     if (nowVisible) {
       _controller.play();

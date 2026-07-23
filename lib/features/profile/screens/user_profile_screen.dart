@@ -7,6 +7,8 @@ import '../../../providers/feed_provider.dart';
 import '../../../providers/auth_provider.dart';
 import '../../../services/user_services.dart';
 import '../../feed/screens/reel_viewer_screen.dart';
+import '../../chat/screen/chat_screen.dart';
+import '../../../providers/chat_provider.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
   final String userId;
@@ -108,13 +110,42 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
               const SizedBox(height: 16),
               if (!isOwnProfile && _following != null)
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 60),
-                  child: ElevatedButton(
-                    onPressed: _toggleFollow,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _following! ? Colors.grey.shade800 : null,
-                    ),
-                    child: Text(_following! ? 'Following' : 'Follow'),
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ElevatedButton(
+                          onPressed: _toggleFollow,
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: _following! ? Colors.grey.shade800 : null,
+                          ),
+                          child: Text(_following! ? 'Following' : 'Follow'),
+                        ),
+                      ),
+                      if (_following! && (_user?.followsMe ?? false)) ...[
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: OutlinedButton(
+                            onPressed: () async {
+                              final conversationId =
+                              await ref.read(chatServiceProvider).getOrCreateConversation(widget.userId);
+                              if (context.mounted) {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => ChatScreen(
+                                      conversationId: conversationId,
+                                      otherUsername: widget.username,
+                                    ),
+                                  ),
+                                );
+                              }
+                            },
+                            child: const Text('Message'),
+                          ),
+                        ),
+                      ],
+                    ],
                   ),
                 ),
               const SizedBox(height: 16),

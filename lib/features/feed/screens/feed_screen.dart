@@ -4,6 +4,7 @@ import '../../../providers/feed_provider.dart';
 import '../widgets/reel_player.dart';
 import '../../upload/screens/upload_screen.dart';
 import '../../profile/screens/profile_screen.dart';
+import '../../chat/screen/inbox_screen.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -93,6 +94,17 @@ class _FeedScreenState extends ConsumerState<FeedScreen> with SingleTickerProvid
 
     return Scaffold(
       body: body,
+      floatingActionButton: _navIndex == 0
+          ? FloatingActionButton(
+        mini: true,
+        backgroundColor: Colors.black54,
+        onPressed: () => Navigator.push(
+          context,
+          MaterialPageRoute(builder: (_) => const InboxScreen()),
+        ),
+        child: const Icon(Icons.chat_bubble_outline, color: Colors.white),
+      )
+          : null,
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
         currentIndex: _navIndex,
